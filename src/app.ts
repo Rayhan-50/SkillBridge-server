@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import { toNodeHandler } from "better-auth/node";
@@ -16,8 +17,8 @@ app.use(cors({
     credentials: true, // required for better-auth cookies
 }));
 
-// Route for Better-Auth endpoints (like sign-in, sign-up, etc.)
-app.all("/api/auth/*", toNodeHandler(auth));
+// Route for Better-Auth endpoints (Express 5 wildcard syntax)
+app.all("/api/auth/*path", toNodeHandler(auth));
 
 // Welcome Route
 app.get('/', (req: Request, res: Response) => {

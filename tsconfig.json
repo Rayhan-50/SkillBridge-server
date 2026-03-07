@@ -1,11 +1,9 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    // File Layout
-    // "rootDir": "./src",
-    // "outDir": "./dist",
+    // File Layout — no rootDir so both src/ and api/ compile
+    "outDir": "./dist",
     // Environment Settings
-    // See also https://aka.ms/tsconfig/module
     "module": "CommonJS",
     "moduleResolution": "Node",
     "target": "es2022",
@@ -17,7 +15,6 @@
       "es2022"
     ],
     // Other Outputs
-    "outDir": "./dist",
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
@@ -29,5 +26,14 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
-  }
+  },
+  "include": [
+    "src/**/*",
+    "api/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "prisma.config.ts"
+  ]
 }

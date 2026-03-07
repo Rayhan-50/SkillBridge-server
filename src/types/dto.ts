@@ -27,7 +27,7 @@ export const updateTutorProfileSchema = createTutorProfileSchema;
 // Booking DTOs
 export const createBookingSchema = z.object({
     body: z.object({
-        tutorId: z.string().cuid({ message: "Invalid Tutor ID" }),
+        tutorId: z.string().min(1, { message: "Invalid Tutor ID" }),
         categoryId: z.string().cuid().optional(),
         date: z.string().datetime({ message: "Date must be ISO string" }),
         startTime: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, "Start time must be HH:MM"),
@@ -47,8 +47,8 @@ export const updateBookingStatusSchema = z.object({
 // Review DTOs
 export const createReviewSchema = z.object({
     body: z.object({
-        bookingId: z.string().cuid(),
-        tutorId: z.string().cuid(),
+        bookingId: z.string().min(1),
+        tutorId: z.string().min(1),
         rating: z.number().int().min(1).max(5),
         comment: z.string().optional(),
     }),
