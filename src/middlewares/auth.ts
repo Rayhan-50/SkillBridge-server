@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import { auth } from "../lib/auth";
+import { getAuth } from "../lib/auth";
 import { Role } from "@prisma/client";
 
 export const requireAuth = (...roles: Role[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
             // better-auth provides a way to get the session from headers
+            const auth = await getAuth();
             const session = await auth.api.getSession({
                 headers: req.headers,
             });

@@ -1,8 +1,6 @@
 import "dotenv/config";
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
-import { toNodeHandler } from "better-auth/node";
-import { auth } from "./lib/auth";
 import { globalErrorHandler } from './middlewares/globalErrorHandler';
 
 const app: Application = express();
@@ -18,7 +16,17 @@ app.use(cors({
 }));
 
 // Route for Better-Auth endpoints (Express 5 wildcard syntax)
-app.all("/api/auth/*path", toNodeHandler(auth));
+app.all("/api/auth/*path", async (req: Request, res: Response, next: express.NextFunction) => {
+    try {
+        const { toNodeHandler } = await import("better-auth/node");
+        const { getAuth } = await import("./lib/auth");
+        const auth = await getAuth();
+        const handler = toNodeHandler(auth);
+        return handler(req, res);
+    } catch (err) {
+        next(err);
+    }
+});
 
 // Welcome Route
 app.get('/', (req: Request, res: Response) => {
