@@ -11,16 +11,18 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS
 app.use(cors({
-    origin: process.env.APP_URL || "http://localhost:4000",
+    origin: [process.env.APP_URL || "http://localhost:4000", "http://localhost:3000", "https://skillbridge-client.vercel.app"],
     credentials: true, // required for better-auth cookies
 }));
+
+import { getAuth } from "./lib/auth";
 
 // Route for Better-Auth endpoints (Express 5 wildcard syntax)
 app.all("/api/auth/*path", async (req: Request, res: Response, next: express.NextFunction) => {
     try {
-        const { toNodeHandler } = await import("better-auth/node");
-        const { getAuth } = await import("./lib/auth");
         const auth = await getAuth();
+        const dynamicImport = new Function('modulePath', 'return import(modulePath)');
+        const { toNodeHandler } = await dynamicImport("better-auth/node");
         const handler = toNodeHandler(auth);
         return handler(req, res);
     } catch (err) {

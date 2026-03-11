@@ -138,3 +138,196 @@ The application uses a centralized global error handler mapped through Express. 
 
 ## License
 MIT License.
+
+
+
+killBridge API Testing Guide (Postman)
+This walkthrough documents exactly how to test all Backend APIs for the SkillBridge project using Postman.
+
+Pre-requisites
+The server must be running on your local machine using npm run dev at http://localhost:3000.
+The Database should be seeded using the scripts 
+seedAdmin.ts
+ and 
+seedData.ts
+. If not, run npx tsx src/scripts/seedAdmin.ts.
+1. Authentication (better-auth)
+Since we are using better-auth, all authentication is handled via their default endpoints under /api/auth/. We test 3 roles: STUDENT, TUTOR, and ADMIN.
+
+A. Register as a Student
+Method: POST
+URL: http://localhost:3000/api/auth/sign-up/email
+Body (JSON):
+json
+{
+  "email": "student@example.com",
+  "password": "password123",
+  "name": "Jane Student",
+  "role": "STUDENT"
+}
+B. Register as a Tutor
+Method: POST
+URL: http://localhost:3000/api/auth/sign-up/email
+Body (JSON):
+json
+{
+  "email": "tutor@example.com",
+  "password": "password123",
+  "name": "John Tutor",
+  "role": "TUTOR"
+}
+C. Login (Sign In)
+Method: POST
+URL: http://localhost:3000/api/auth/sign-in/email
+Body (JSON):
+json
+{
+  "email": "student@example.com",
+  "password": "password123"
+}
+Postman Setup Note: When you login successfully, better-auth sets an HTTP-only session cookie (usually better-auth.session_token). Postman will automatically capture and attach this cookie natively on subsequent requests.
+To switch users: Clear cookies in Postman (Cookies > localhost > Delete better-auth.session_token), and then log in using a different account.
+Admin Login: We seeded an admin at admin@skillbridge.com with password password123. Log in with this to test Admin routes.
+2. Public Endpoints (No Auth Required)
+Get Categories
+Method: GET
+URL: http://localhost:3000/api/categories
+Get All Tutors (Search/Filter/Paginate)
+Method: GET
+URL: http://localhost:3000/api/tutors?page=1&limit=10&sortBy=hourlyRate&sortOrder=asc
+Get Single Tutor by ID
+Method: GET
+URL: http://localhost:3000/api/tutors/{{tutor-user-id}}
+Get Tutor Reviews
+Method: GET
+URL: http://localhost:3000/api/reviews/{{tutor-user-id}}
+3. Student Routes (Requires Student Login)
+Note: Sign in as 
+student@example.com
+ first.
+
+Get My Profile
+Method: GET
+URL: http://localhost:3000/api/me
+Create a Booking
+Method: POST
+URL: http://localhost:3000/api/bookings
+Body (JSON):
+json
+{
+  "tutorId": "{{tutor-user-id}}",
+  "date": "2026-12-01T00:00:00.000Z",
+  "startTime": "10:00",
+  "endTime": "11:00",
+  "price": 50,
+  "notes": "I need help with React Hooks."
+}
+Get My Bookings (As a Student)
+Method: GET
+URL: http://localhost:3000/api/bookings (This endpoint automatically detects role and fetches your student bookings)
+Complete a Booking
+Method: PATCH
+URL: http://localhost:3000/api/bookings/{{booking-id}}
+Body (JSON):
+json
+{
+  "status": "COMPLETED"
+}
+Leave a Review
+Method: POST
+URL: http://localhost:3000/api/reviews
+Body (JSON):
+json
+{
+  "tutorId": "{{tutor-user-id}}",
+  "bookingId": "{{booking-id}}",
+  "rating": 5,
+  "comment": "Amazing session! Highly recommend."
+}
+4. Tutor Routes (Requires Tutor Login)
+Note: Sign in as 
+tutor@example.com
+ first.
+
+Get My Profile (with Tutor Profile data)
+Method: GET
+URL: http://localhost:3000/api/me
+Update Tutor Profile
+Method: PATCH
+URL: http://localhost:3000/api/tutor/profile
+Body (JSON):
+json
+{
+  "bio": "Expert JavaScript developer.",
+  "headline": "Senior Full-stack Engineer",
+  "hourlyRate": 60,
+  "subjects": ["JavaScript", "React", "Node.js"],
+  "location": "Online",
+  "experienceYears": 5
+}
+Add/Update Availability
+Method: PUT
+URL: http://localhost:3000/api/tutor/availability
+Body (JSON):
+json
+{
+  "schedule": {
+    "monday": ["09:00", "15:00"],
+    "wednesday": ["10:00", "12:00"]
+  }
+}
+Get Bookings (As a Tutor)
+Method: GET
+URL: http://localhost:3000/api/bookings (Automatically fetches bookings where you are the tutor)
+Confirm a Booking
+Method: PATCH
+URL: http://localhost:3000/api/bookings/{{booking-id}}
+Body (JSON):
+json
+{
+  "status": "CONFIRMED"
+}
+5. Admin Routes (Requires Admin Login)
+Note: Sign in as 
+admin@skillbridge.com
+ first.
+
+Get Dashboard Statistics
+Method: GET
+URL: http://localhost:3000/api/admin/stats
+Manage Users (Get All Users)
+Method: GET
+URL: http://localhost:3000/api/admin/users?page=1&limit=20
+Ban/Unban or Change Role for User
+Method: PATCH
+URL: http://localhost:3000/api/admin/users/{{any-user-id}}
+Body (JSON):
+json
+{
+  "status": "BANNED",
+  "role": "STUDENT"
+}
+(Valid statuses: 'ACTIVE', 'BANNED')
+
+Create a New Category
+Method: POST
+URL: http://localhost:3000/api/categories
+Body (JSON):
+json
+{
+  "name": "Data Science",
+  "slug": "data-science",
+  "description": "Learn Data Science & ML",
+  "iconUrl": "https://example.com/icon.png"
+}
+How better-auth verifies sessions
+The 
+requireAuth
+ middleware implemented in 
+middlewares/auth.ts
+ intercepts incoming requests, strips the HTTP Cookie sent from Postman, and verifies it with the database. Because it is robust, any request sent using the examples above with the matching active auth cookie will authorize correctly.
+
+
+Comment
+Ctrl+Alt+M
+

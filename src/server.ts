@@ -7,13 +7,13 @@ async function bootstrap() {
     try {
         // Basic test of connection
         await prisma.$connect();
-        console.log("🛢  Database connection established successfully!");
+        console.log(" Database connection established successfully!");
 
         app.listen(PORT, () => {
-            console.log(`🚀 Server is listening on port ${PORT}`);
+            console.log(` Server is listening on port ${PORT}`);
         });
     } catch (err) {
-        console.error("❌ Failed to connect to database:", err);
+        console.error("Failed to connect to database:", err);
         process.exit(1);
     }
 }
