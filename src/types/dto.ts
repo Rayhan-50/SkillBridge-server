@@ -18,7 +18,7 @@ export const createTutorProfileSchema = z.object({
         location: z.string().optional(),
         experienceYears: z.number().int().min(0).optional(),
         isAvailable: z.boolean().optional(),
-        availability: z.any().optional(), // Can refine based on exact JSON structure expected
+        availability: z.record(z.string(), z.unknown()).optional(), // Can refine based on exact JSON structure expected
     }),
 });
 

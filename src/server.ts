@@ -8,6 +8,7 @@ async function bootstrap() {
         // Basic test of connection
         await prisma.$connect();
         console.log(" Database connection established successfully!");
+        console.log(" ORM and Models initialized properly.");
 
         app.listen(PORT, () => {
             console.log(` Server is listening on port ${PORT}`);
