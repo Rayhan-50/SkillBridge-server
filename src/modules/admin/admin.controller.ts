@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { AdminService } from "./admin.service";
 import httpStatus from "http-status";
 
+/**
+ * Retrieve system-wide statistics for the admin dashboard
+ */
 const getStats = async (req: Request, res: Response) => {
     try {
         const result = await AdminService.getStats();
