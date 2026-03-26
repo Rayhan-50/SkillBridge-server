@@ -1,333 +1,241 @@
-# SkillBridge - Backend Server
+# SkillBridge — Backend Server
 
-SkillBridge is an educational platform designed to connect students with expert tutors. This repository contains the backend server application built with Node.js, Express, TypeScript, and Prisma ORM connecting to a PostgreSQL database.
+<p align="center">
+  <strong>A production-grade REST API for connecting students with expert tutors.</strong><br/>
+  Built with Node.js · Express · TypeScript · Prisma · PostgreSQL
+</p>
 
-## Technologies Used
-
-*   **Node.js & Express**: Core framework for building RESTful APIs.
-*   **TypeScript**: Strongly-typed JavaScript for better developer experience and reliability.
-*   **Prisma ORM**: Modern database toolkit and query builder for PostgreSQL.
-*   **PostgreSQL**: Relational database for persistent storage.
-*   **Better-Auth**: Extensible authentication library handling sessions, users, and roles.
-*   **Zod**: TypeScript-first schema declaration and data validation.
-*   **CORS & Helmet**: Security middlewares.
-
-## Features
-
-*   **Role-Based Access Control**: Supports `STUDENT`, `TUTOR`, and `ADMIN` roles natively.
-*   **Authentication**: Secure email/password login integrated with `better-auth`.
-*   **Tutor Management**: Fetch tutor profiles, update availability, filter by subjects/price.
-*   **Booking System**: Create, retrieve, and manage tutoring sessions (PENDING, CONFIRMED, COMPLETED, CANCELLED).
-*   **Reviews & Ratings**: Leave ratings for completed sessions, calculate average tutor ratings dynamically.
-*   **Admin Dashboard**: Manage users, ban members, and organize learning categories.
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-18+-339933?style=flat-square&logo=node.js&logoColor=white" />
+  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Prisma-ORM-2D3748?style=flat-square&logo=prisma&logoColor=white" />
+  <img src="https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=flat-square&logo=postgresql&logoColor=white" />
+  <img src="https://img.shields.io/badge/Deployed-Vercel-000000?style=flat-square&logo=vercel&logoColor=white" />
+</p>
 
 ---
 
-## Getting Started
+## 📖 Overview
 
-### Prerequisites
+SkillBridge is an online tutoring marketplace that allows students to discover, book, and review expert tutors. This repository is the **backend API server** powering the entire platform — handling authentication, user role management, tutor profiles, bookings, and reviews.
 
-Ensure you have the following installed on your machine:
-
-*   [Node.js](https://nodejs.org/) (v18 or higher)
-*   [PostgreSQL](https://www.postgresql.org/) (Running locally or via a cloud provider)
-
-### Installation
-
-1.  **Clone the repository** (or navigate to the project directory):
-    ```bash
-    cd SkillBridge-server
-    ```
-
-2.  **Install dependencies**:
-    ```bash
-    npm install
-    # or
-    yarn install
-    ```
-
-3.  **Environment Variables**:
-    Create a `.env` file in the root directory and configure it as follows:
-
-    ```env
-    DATABASE_URL="postgresql://postgres:<YOUR_DB_PASSWORD>@localhost:5432/skillbridge?schema=public"
-    PORT=3000
-    BETTER_AUTH_SECRET="your_highly_secure_random_string"
-    BETTER_AUTH_URL="http://localhost:3000"
-    APP_URL="http://localhost:4000" # URL of the Next.js frontend
-    ```
-
-### Database Setup
-
-1.  **Generate Prisma Client**:
-    ```bash
-    npx prisma generate
-    ```
-
-2.  **Push the Schema to the Database**:
-    *(This command syncs your database schema with Prisma without needing migrations)*
-    ```bash
-    npx prisma db push
-    ```
-
-3.  **Seed Initial Data (Admin & Categories)**:
-    Run the seed scripts to populate the database with a default Admin account and initial learning categories.
-    ```bash
-    npx tsx src/scripts/seedAdmin.ts
-    npx tsx src/scripts/seedData.ts
-    ```
-    *Note: The default admin credentials are `admin@skillbridge.com` / `password123`.*
+**Live API:** [https://skillbridge-server-nu.vercel.app](https://skillbridge-server-nu.vercel.app)  
+**Frontend Client:** [https://skillbridge-client-coral.vercel.app](https://skillbridge-client-coral.vercel.app)
 
 ---
 
-## Running the Application
+## 🛠️ Tech Stack
 
-### Development Mode
+| Layer | Technology |
+|---|---|
+| Runtime | Node.js (v18+) |
+| Framework | Express.js |
+| Language | TypeScript 5.x |
+| ORM | Prisma 7.x |
+| Database | PostgreSQL (Neon) |
+| Auth | Better Auth |
+| Validation | Zod |
+| Security | CORS, HTTP-only Cookies |
+| Deployment | Vercel (Serverless) |
 
-Run the following command to start the server in watch mode using `tsx`. It will automatically reload upon code changes.
+---
 
-```bash
-npm run dev
+## ✨ Features
+
+- 🔐 **Secure Authentication** — Email/password sign-up & sign-in via Better Auth with HTTP-only session cookies
+- 👥 **Role-Based Access Control** — Three roles: `STUDENT`, `TUTOR`, and `ADMIN` with route-level enforcement
+- 🧑‍🏫 **Tutor Profiles** — Bio, headline, subjects, hourly rate, experience, and availability schedule
+- 📅 **Booking System** — Full lifecycle management: `PENDING → CONFIRMED → COMPLETED / CANCELLED`
+- ⭐ **Reviews & Ratings** — Students rate completed sessions; tutor average ratings computed dynamically
+- 🛡️ **Admin Dashboard** — Platform-wide stats, user management, ban/unban, and category control
+- 🌐 **Production-Ready** — Centralized error handling, structured JSON responses, serverless-compatible build
+
+---
+
+## 📁 Project Structure
+
+```
+SkillBridge-server/
+├── api/
+│   └── index.ts              # Vercel serverless entry point
+├── prisma/
+│   └── schema.prisma         # Database schema (User, TutorProfile, Booking, Review, Category)
+├── src/
+│   ├── server.ts             # Local HTTP server bootstrap
+│   ├── app.ts                # Express app config (CORS, parsers, routes)
+│   ├── lib/
+│   │   ├── auth.ts           # Better Auth instance & trustedOrigins
+│   │   └── prisma.ts         # Prisma client singleton
+│   ├── middlewares/
+│   │   ├── auth.ts           # requireAuth middleware (session verification)
+│   │   └── globalErrorHandler.ts
+│   ├── modules/
+│   │   ├── admin/            # Admin stats, user management
+│   │   ├── booking/          # Booking CRUD & status transitions
+│   │   ├── category/         # Learning categories
+│   │   ├── review/           # Ratings & reviews
+│   │   ├── tutor/            # Tutor profiles & availability
+│   │   └── user/             # Current user profile
+│   └── types/                # Shared TypeScript types
+├── .env                      # Environment variables (not committed)
+├── package.json
+├── tsconfig.json
+└── vercel.json               # Vercel deployment config
 ```
 
-The server will start at `http://localhost:3000`.
-
-### Production Build
-
-1.  **Compile TypeScript to JavaScript**:
-    ```bash
-    npm run build
-    ```
-
-2.  **Start the Server**:
-    ```bash
-    npm run start
-    ```
+Each module follows a **Router → Service → (Prisma)** layered pattern for clean separation of concerns.
 
 ---
 
-## API Overview
+## 🔌 API Overview
 
-Authentication is handled natively at `/api/auth/*` via `better-auth`.
+All responses follow a consistent JSON structure. Authentication is cookie-based via Better Auth.
 
-### Tutors
-*   `GET /api/tutors` - Fetch all tutors (supports pagination & filtering).
-*   `GET /api/tutors/:id` - Fetch single tutor details.
-*   `PATCH /api/tutor/profile` - Update own tutor profile (TUTOR role required).
-*   `GET/PUT /api/tutor/availability` - Manage schedule (TUTOR role required).
+### 🔓 Auth — `/api/auth/*`
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/auth/sign-up/email` | Register new user |
+| `POST` | `/api/auth/sign-in/email` | Login |
+| `POST` | `/api/auth/sign-out` | Logout |
+| `GET` | `/api/auth/get-session` | Get current session |
 
-### Bookings
-*   `POST /api/bookings` - Request a slot (STUDENT role required).
-*   `GET /api/bookings` - Retrieve current user's bookings.
-*   `PATCH /api/bookings/:id` - Update booking status to `CONFIRMED` or `COMPLETED`.
+### 👩‍🏫 Tutors — `/api/tutors`
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/tutors` | List all tutors (paginated, filterable) |
+| `GET` | `/api/tutors/:id` | Get single tutor profile |
+| `PATCH` | `/api/tutor/profile` | Update own profile *(Tutor only)* |
+| `GET/PUT` | `/api/tutor/availability` | Manage schedule *(Tutor only)* |
 
-### Reviews
-*   `GET /api/reviews/:tutorId` - Fetch all reviews for a specific tutor.
-*   `POST /api/reviews` - Add a rating to a completed session (STUDENT role required).
+### 📅 Bookings — `/api/bookings`
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/bookings` | Create booking *(Student only)* |
+| `GET` | `/api/bookings` | Get my bookings (role-aware) |
+| `PATCH` | `/api/bookings/:id` | Update booking status |
 
-### Admin
-*   `GET /api/admin/stats` - Platform metrics.
-*   `GET /api/admin/users` - Paginated user listing.
-*   `PATCH /api/admin/users/:id` - Modify user roles or ban accounts.
-*   `POST /api/categories` - Create new learning categories.
+### ⭐ Reviews — `/api/reviews`
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/reviews/:tutorId` | Get reviews for a tutor |
+| `POST` | `/api/reviews` | Leave a review *(Student only)* |
+
+### 🛡️ Admin — `/api/admin`
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/admin/stats` | Platform metrics |
+| `GET` | `/api/admin/users` | All users (paginated) |
+| `PATCH` | `/api/admin/users/:id` | Change role or ban user |
+| `POST` | `/api/categories` | Create category |
 
 ---
 
-## Error Handling
-The application uses a centralized global error handler mapped through Express. It captures `ZodError` for validation failures, Prisma exceptions for database uniqueness constraints, and standard application errors, returning a structured JSON format consistently across all endpoints.
+## ⚙️ Installation & Setup
 
-## License
-MIT License.
+### Prerequisites
+- Node.js v18+
+- PostgreSQL database (local or cloud, e.g. [Neon](https://neon.tech))
 
+### 1. Clone & Install
 
+```bash
+git clone https://github.com/Rayhan-50/SkillBridge-server.git
+cd SkillBridge-server
+npm install
+```
 
-killBridge API Testing Guide (Postman)
-This walkthrough documents exactly how to test all Backend APIs for the SkillBridge project using Postman.
+### 2. Configure Environment
 
-Pre-requisites
-The server must be running on your local machine using npm run dev at http://localhost:3000.
-The Database should be seeded using the scripts 
-seedAdmin.ts
- and 
-seedData.ts
-. If not, run npx tsx src/scripts/seedAdmin.ts.
-1. Authentication (better-auth)
-Since we are using better-auth, all authentication is handled via their default endpoints under /api/auth/. We test 3 roles: STUDENT, TUTOR, and ADMIN.
+Create a `.env` file in the project root:
 
-A. Register as a Student
-Method: POST
-URL: http://localhost:3000/api/auth/sign-up/email
-Body (JSON):
-json
-{
-  "email": "student@example.com",
-  "password": "password123",
-  "name": "Jane Student",
-  "role": "STUDENT"
-}
-B. Register as a Tutor
-Method: POST
-URL: http://localhost:3000/api/auth/sign-up/email
-Body (JSON):
-json
-{
-  "email": "tutor@example.com",
-  "password": "password123",
-  "name": "John Tutor",
-  "role": "TUTOR"
-}
-C. Login (Sign In)
-Method: POST
-URL: http://localhost:3000/api/auth/sign-in/email
-Body (JSON):
-json
-{
-  "email": "student@example.com",
-  "password": "password123"
-}
-Postman Setup Note: When you login successfully, better-auth sets an HTTP-only session cookie (usually better-auth.session_token). Postman will automatically capture and attach this cookie natively on subsequent requests.
-To switch users: Clear cookies in Postman (Cookies > localhost > Delete better-auth.session_token), and then log in using a different account.
-Admin Login: We seeded an admin at admin@skillbridge.com with password password123. Log in with this to test Admin routes.
-2. Public Endpoints (No Auth Required)
-Get Categories
-Method: GET
-URL: http://localhost:3000/api/categories
-Get All Tutors (Search/Filter/Paginate)
-Method: GET
-URL: http://localhost:3000/api/tutors?page=1&limit=10&sortBy=hourlyRate&sortOrder=asc
-Get Single Tutor by ID
-Method: GET
-URL: http://localhost:3000/api/tutors/{{tutor-user-id}}
-Get Tutor Reviews
-Method: GET
-URL: http://localhost:3000/api/reviews/{{tutor-user-id}}
-3. Student Routes (Requires Student Login)
-Note: Sign in as 
-student@example.com
- first.
+```env
+DATABASE_URL="postgresql://<user>:<password>@<host>/<db>?sslmode=require"
+PORT=4000
+BETTER_AUTH_SECRET="your_highly_secure_random_secret"
+BETTER_AUTH_URL="http://localhost:4000/api/auth"
+APP_URL="http://localhost:4000"
+CLIENT_URL="http://localhost:3000"
+APP_USER="admin@example.com"
+APP_PASS="your_email_app_password"
+GOOGLE_CLIENT_ID="your_google_client_id"
+GOOGLE_CLIENT_SECRET="your_google_client_secret"
+```
 
-Get My Profile
-Method: GET
-URL: http://localhost:3000/api/me
-Create a Booking
-Method: POST
-URL: http://localhost:3000/api/bookings
-Body (JSON):
-json
-{
-  "tutorId": "{{tutor-user-id}}",
-  "date": "2026-12-01T00:00:00.000Z",
-  "startTime": "10:00",
-  "endTime": "11:00",
-  "price": 50,
-  "notes": "I need help with React Hooks."
-}
-Get My Bookings (As a Student)
-Method: GET
-URL: http://localhost:3000/api/bookings (This endpoint automatically detects role and fetches your student bookings)
-Complete a Booking
-Method: PATCH
-URL: http://localhost:3000/api/bookings/{{booking-id}}
-Body (JSON):
-json
-{
-  "status": "COMPLETED"
-}
-Leave a Review
-Method: POST
-URL: http://localhost:3000/api/reviews
-Body (JSON):
-json
-{
-  "tutorId": "{{tutor-user-id}}",
-  "bookingId": "{{booking-id}}",
-  "rating": 5,
-  "comment": "Amazing session! Highly recommend."
-}
-4. Tutor Routes (Requires Tutor Login)
-Note: Sign in as 
-tutor@example.com
- first.
+### 3. Database Setup
 
-Get My Profile (with Tutor Profile data)
-Method: GET
-URL: http://localhost:3000/api/me
-Update Tutor Profile
-Method: PATCH
-URL: http://localhost:3000/api/tutor/profile
-Body (JSON):
-json
-{
-  "bio": "Expert JavaScript developer.",
-  "headline": "Senior Full-stack Engineer",
-  "hourlyRate": 60,
-  "subjects": ["JavaScript", "React", "Node.js"],
-  "location": "Online",
-  "experienceYears": 5
-}
-Add/Update Availability
-Method: PUT
-URL: http://localhost:3000/api/tutor/availability
-Body (JSON):
-json
-{
-  "schedule": {
-    "monday": ["09:00", "15:00"],
-    "wednesday": ["10:00", "12:00"]
-  }
-}
-Get Bookings (As a Tutor)
-Method: GET
-URL: http://localhost:3000/api/bookings (Automatically fetches bookings where you are the tutor)
-Confirm a Booking
-Method: PATCH
-URL: http://localhost:3000/api/bookings/{{booking-id}}
-Body (JSON):
-json
-{
-  "status": "CONFIRMED"
-}
-5. Admin Routes (Requires Admin Login)
-Note: Sign in as 
-admin@skillbridge.com
- first.
+```bash
+# Generate Prisma Client
+npx prisma generate
 
-Get Dashboard Statistics
-Method: GET
-URL: http://localhost:3000/api/admin/stats
-Manage Users (Get All Users)
-Method: GET
-URL: http://localhost:3000/api/admin/users?page=1&limit=20
-Ban/Unban or Change Role for User
-Method: PATCH
-URL: http://localhost:3000/api/admin/users/{{any-user-id}}
-Body (JSON):
-json
-{
-  "status": "BANNED",
-  "role": "STUDENT"
-}
-(Valid statuses: 'ACTIVE', 'BANNED')
+# Push schema to database
+npx prisma db push
 
-Create a New Category
-Method: POST
-URL: http://localhost:3000/api/categories
-Body (JSON):
-json
-{
-  "name": "Data Science",
-  "slug": "data-science",
-  "description": "Learn Data Science & ML",
-  "iconUrl": "https://example.com/icon.png"
-}
-How better-auth verifies sessions
-The 
-requireAuth
- middleware implemented in 
-middlewares/auth.ts
- intercepts incoming requests, strips the HTTP Cookie sent from Postman, and verifies it with the database. Because it is robust, any request sent using the examples above with the matching active auth cookie will authorize correctly.
+# Seed admin account and categories
+npx tsx src/scripts/seedAdmin.ts
+npx tsx src/scripts/seedData.ts
+```
 
+> Default admin credentials after seeding: `admin@skillbridge.com` / `password123`
 
-Comment
-Ctrl+Alt+M
+---
 
+## 📜 Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server with hot-reload (`tsx watch`) |
+| `npm run build` | Generate Prisma client & compile TypeScript |
+| `npm run start` | Run compiled production server (`dist/server.js`) |
+
+---
+
+## 🚀 Deployment
+
+This server is deployed as a **serverless function on Vercel**.
+
+### Required Vercel Environment Variables
+
+Set these in your Vercel project → **Settings → Environment Variables**:
+
+```env
+DATABASE_URL=<your_neon_connection_string>
+BETTER_AUTH_SECRET=<your_secret>
+BETTER_AUTH_URL=https://skillbridge-server-nu.vercel.app/api/auth
+APP_URL=https://skillbridge-server-nu.vercel.app
+CLIENT_URL=https://skillbridge-client-coral.vercel.app
+GOOGLE_CLIENT_ID=<your_google_client_id>
+GOOGLE_CLIENT_SECRET=<your_google_client_secret>
+```
+
+### Deploy
+
+Push to the `main` branch — Vercel auto-deploys on every push.
+
+```bash
+git add .
+git commit -m "chore: deploy update"
+git push origin main
+```
+
+---
+
+## 🔮 Future Improvements
+
+- [ ] Real-time notifications (WebSockets / SSE) for booking status updates
+- [ ] Payment integration (Stripe) for booking payments
+- [ ] Video call scheduling with calendar sync
+- [ ] Rate limiting & API key management
+- [ ] Comprehensive unit & integration test suite (Jest + Supertest)
+- [ ] Swagger / OpenAPI documentation
+
+---
+
+## 👤 Author
+
+**Rayhan**  
+📧 rayhanahmed.nstu@gmail.com  
+🔗 [GitHub](https://github.com/Rayhan-50)
+
+---
+
+<p align="center">Made with ❤️ for the SkillBridge platform</p>
