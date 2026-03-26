@@ -41,6 +41,7 @@ const getMyBookings = async (userId: string, role: string) => {
             tutor: { select: { name: true, email: true, image: true, phone: true } },
             student: { select: { name: true, email: true, image: true, phone: true } },
             category: { select: { name: true, iconUrl: true } },
+            review: { select: { id: true, rating: true, comment: true } },
         },
         orderBy: { createdAt: "desc" }
     });
@@ -84,8 +85,20 @@ const updateBookingStatus = async (
     });
 };
 
+const getAllBookings = async () => {
+    return await prisma.booking.findMany({
+        include: {
+            tutor: { select: { name: true, email: true } },
+            student: { select: { name: true, email: true } },
+            category: { select: { name: true } },
+        },
+        orderBy: { createdAt: "desc" }
+    });
+};
+
 export const BookingService = {
     createBooking,
     getMyBookings,
+    getAllBookings,
     updateBookingStatus
 };

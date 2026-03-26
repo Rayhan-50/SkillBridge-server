@@ -26,4 +26,10 @@ router.patch(
     BookingController.updateBookingStatus
 );
 
+router.get(
+    "/",
+    requireAuth("ADMIN"),
+    BookingController.getAllBookings
+);
+
 export const BookingRouter = router;

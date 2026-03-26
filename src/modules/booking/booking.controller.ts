@@ -65,8 +65,27 @@ const updateBookingStatus = async (req: Request, res: Response) => {
     }
 };
 
+const getAllBookings = async (req: Request, res: Response) => {
+    try {
+        const result = await BookingService.getAllBookings();
+        res.status(httpStatus.OK).json({
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "All bookings retrieved successfully",
+            data: result,
+        });
+    } catch (error) {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+            message: "Failed to retrieve all bookings",
+        });
+    }
+};
+
 export const BookingController = {
     createBooking,
     getMyBookings,
+    getAllBookings,
     updateBookingStatus
 };

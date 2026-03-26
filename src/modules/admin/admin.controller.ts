@@ -57,8 +57,27 @@ const updateUserStatus = async (req: Request, res: Response) => {
     }
 };
 
+const deleteUser = async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id as string;
+        await AdminService.deleteUser(id);
+        res.status(httpStatus.OK).json({
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "User deleted successfully",
+        });
+    } catch (error: any) {
+        res.status(httpStatus.BAD_REQUEST).json({
+            success: false,
+            statusCode: httpStatus.BAD_REQUEST,
+            message: error.message || "Failed to delete user",
+        });
+    }
+};
+
 export const AdminController = {
     getStats,
     getAllUsers,
-    updateUserStatus
+    updateUserStatus,
+    deleteUser
 };

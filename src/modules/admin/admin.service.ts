@@ -43,4 +43,10 @@ const updateUserStatus = async (id: string, payload: any) => {
     });
 };
 
-export const AdminService = { getStats, getAllUsers, updateUserStatus };
+const deleteUser = async (id: string) => {
+    return await prisma.user.delete({
+        where: { id }
+    });
+};
+
+export const AdminService = { getStats, getAllUsers, updateUserStatus, deleteUser };

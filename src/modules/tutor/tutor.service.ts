@@ -7,11 +7,28 @@ const getAllTutors = async (query: any) => {
 
     const andConditions: Prisma.TutorProfileWhereInput[] = [];
 
-    // filter by subject
-    if (query.subject) {
-        // Check if the subject exists in the array
+    // filter by search term
+    if (query.search) {
         andConditions.push({
-            subjects: { has: query.subject }
+            OR: [
+                { bio: { contains: query.search, mode: "insensitive" } },
+                { headline: { contains: query.search, mode: "insensitive" } },
+                {
+                    user: {
+                        is: {
+                            name: { contains: query.search, mode: "insensitive" }
+                        }
+                    }
+                }
+            ]
+        });
+    }
+
+    // filter by category (or subject depending on query format)
+    const category = query.category || query.subject;
+    if (category) {
+        andConditions.push({
+            subjects: { has: category }
         });
     }
 
