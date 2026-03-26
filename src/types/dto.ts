@@ -57,10 +57,10 @@ export const createReviewSchema = z.object({
 // Category DTOs
 export const createCategorySchema = z.object({
     body: z.object({
-        name: z.string().min(1),
-        slug: z.string().min(1),
+        name: z.string({ message: "Category name is required" }).min(1, "Name cannot be empty"),
+        slug: z.string({ message: "Category slug is required" }).min(1, "Slug cannot be empty"),
         description: z.string().optional(),
-        iconUrl: z.string().url().optional(),
+        iconUrl: z.string().url("Must be a valid URL").optional(),
     }),
 });
 
