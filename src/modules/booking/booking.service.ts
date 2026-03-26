@@ -1,6 +1,11 @@
 import { BookingStatus } from "@prisma/client";
 import { prisma } from "../../lib/prisma";
 
+/**
+ * Creates a new booking for a student with a specific tutor, checking for schedule conflicts first.
+ * @param studentId - The ID of the student making the booking
+ * @param payload - The booking details including tutorId, date, startTime, and endTime
+ */
 const createBooking = async (studentId: string, payload: any) => {
     // Check if slot is already booked (conflict check)
     const existingBooking = await prisma.booking.findFirst({
