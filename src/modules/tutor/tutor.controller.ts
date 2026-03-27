@@ -89,7 +89,8 @@ const getTutorAvailability = async (req: Request, res: Response) => {
 const updateTutorAvailability = async (req: Request, res: Response) => {
     try {
         const userId = req.user!.id;
-        const result = await TutorService.updateTutorAvailability(userId, req.body.availability);
+        const availabilityData = req.body.schedule || req.body.availability;
+        const result = await TutorService.updateTutorAvailability(userId, availabilityData);
         res.status(httpStatus.OK).json({
             success: true,
             statusCode: httpStatus.OK,

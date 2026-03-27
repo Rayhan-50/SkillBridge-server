@@ -7,7 +7,12 @@ const createCategory = async (payload: Prisma.CategoryCreateInput) => {
 
 const getAllCategories = async () => {
     return await prisma.category.findMany({
-        orderBy: { name: "asc" }
+        orderBy: { name: "asc" },
+        include: {
+            _count: {
+                select: { bookings: true }
+            }
+        }
     });
 };
 
