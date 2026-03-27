@@ -151,9 +151,13 @@ const getTutorAvailability = async (userId: string) => {
 };
 
 const updateTutorAvailability = async (userId: string, availability: any) => {
-    return await prisma.tutorProfile.update({
+    return await prisma.tutorProfile.upsert({
         where: { userId },
-        data: { availability }
+        update: { availability },
+        create: {
+            userId,
+            availability
+        }
     });
 };
 
