@@ -13,8 +13,8 @@ const createReview = async (studentId: string, payload: any) => {
         throw new Error("You are not authorized to review this booking");
     }
 
-    if (booking.status !== "COMPLETED") {
-        throw new Error("You can only review a completed booking");
+    if (booking.status !== "COMPLETED" && booking.status !== "CONFIRMED") {
+        throw new Error("You can only review a confirmed or completed booking");
     }
 
     if (booking.tutorId !== tutorId) {
