@@ -81,6 +81,7 @@ import { ReviewRouter } from "./modules/review/review.router";
 import { CategoryRouter } from "./modules/category/category.router";
 import { AdminRouter } from "./modules/admin/admin.router";
 import { UserRouter } from "./modules/user/user.router";
+import { PaymentRouter } from "./modules/payment/payment.router";
 
 // App Routers
 app.use("/api/tutors", TutorRouter);
@@ -90,6 +91,7 @@ app.use("/api/reviews", ReviewRouter);
 app.use("/api/categories", CategoryRouter);
 app.use("/api/admin", AdminRouter);
 app.use("/api/me", UserRouter);
+app.use("/api/payment", PaymentRouter);
 
 // Global Error Handler
 app.use(globalErrorHandler);

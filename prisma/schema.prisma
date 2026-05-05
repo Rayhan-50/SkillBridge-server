@@ -29,6 +29,7 @@ model User {
   bookingsAsTutor   Booking[] @relation("TutorBookings")
   reviewsAsStudent  Review[]  @relation("StudentReviews")
   reviewsAsTutor    Review[]  @relation("TutorReviews")
+  payments          Payment[]
 
   @@map("user")
 }
@@ -140,6 +141,7 @@ model Booking {
   updatedAt   DateTime @updatedAt
   
   review      Review?
+  payment     Payment?
 
   @@map("booking")
 }
@@ -167,3 +169,20 @@ model Review {
 
   @@map("review")
 }
+
+model Payment {
+  id            String   @id @default(cuid())
+  amount        Float
+  currency      String   @default("usd")
+  status        String   // "succeeded", "pending", "failed"
+  transactionId String   @unique // Stripe Payment Intent ID
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  bookingId     String?  @unique
+  booking       Booking? @relation(fields: [bookingId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("payment")
+}
+
