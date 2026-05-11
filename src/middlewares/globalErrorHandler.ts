@@ -31,6 +31,6 @@ export const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => 
         success: false,
         statusCode,
         message,
-        errorDetails: statusCode === 500 ? err.stack : errorDetails,
+        errorDetails: process.env.NODE_ENV !== "production" ? err.stack : errorDetails,
     });
 };

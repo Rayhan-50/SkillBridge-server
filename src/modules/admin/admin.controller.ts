@@ -78,9 +78,48 @@ const deleteUser = async (req: Request, res: Response) => {
     }
 };
 
+const createTutor = async (req: Request, res: Response) => {
+    try {
+        const result = await AdminService.createTutor(req.body);
+        res.status(httpStatus.CREATED).json({
+            success: true,
+            statusCode: httpStatus.CREATED,
+            message: "Tutor created successfully",
+            data: result,
+        });
+    } catch (error: any) {
+        res.status(httpStatus.BAD_REQUEST).json({
+            success: false,
+            statusCode: httpStatus.BAD_REQUEST,
+            message: error.message || "Failed to create tutor",
+        });
+    }
+};
+
+const updateTutor = async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id as string;
+        const result = await AdminService.updateTutor(id, req.body);
+        res.status(httpStatus.OK).json({
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "Tutor updated successfully",
+            data: result,
+        });
+    } catch (error: any) {
+        res.status(httpStatus.BAD_REQUEST).json({
+            success: false,
+            statusCode: httpStatus.BAD_REQUEST,
+            message: error.message || "Failed to update tutor",
+        });
+    }
+};
+
 export const AdminController = {
     getStats,
     getAllUsers,
     updateUserStatus,
-    deleteUser
+    deleteUser,
+    createTutor,
+    updateTutor
 };

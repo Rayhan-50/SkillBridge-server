@@ -37,7 +37,7 @@ export const createBookingSchema = z.object({
 });
 
 export const updateBookingStatusSchema = z.object({
-    params: z.object({ id: z.string().cuid() }),
+    params: z.object({ id: z.string().min(1) }),
     body: z.object({
         status: z.enum(["CONFIRMED", "COMPLETED", "CANCELLED", "REJECTED"]),
         meetingLink: z.string().url().optional().or(z.literal('')),

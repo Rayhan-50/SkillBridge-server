@@ -85,7 +85,6 @@ import { PaymentRouter } from "./modules/payment/payment.router";
 
 // App Routers
 app.use("/api/tutors", TutorRouter);
-app.use("/api/tutor", TutorRouter);
 app.use("/api/bookings", BookingRouter);
 app.use("/api/reviews", ReviewRouter);
 app.use("/api/categories", CategoryRouter);

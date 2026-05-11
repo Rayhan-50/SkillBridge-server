@@ -23,17 +23,7 @@ const createPaymentIntent = async (req: Request, res: Response) => {
 const savePaymentInfo = async (req: Request, res: Response) => {
   try {
     const { amount, transactionId, status, bookingId } = req.body;
-    // Get user id from better-auth session. If not available in req.user, 
-    // it should be provided from the client or parsed via auth middleware.
-    // Assuming you have auth middleware that injects user id:
-    const userId = (req as any).user?.id || req.body.userId; 
-
-    if (!userId) {
-       return res.status(httpStatus.UNAUTHORIZED).json({
-         success: false,
-         message: "User not authenticated",
-       });
-    }
+    const userId = req.user!.id;
 
     const result = await PaymentService.savePaymentInfo({
       amount,
@@ -58,16 +48,8 @@ const savePaymentInfo = async (req: Request, res: Response) => {
 
 const getPaymentHistory = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user?.id || req.query.userId;
-    
-    if (!userId) {
-       return res.status(httpStatus.UNAUTHORIZED).json({
-         success: false,
-         message: "User not authenticated",
-       });
-    }
-
-    const result = await PaymentService.getPaymentHistory(userId as string);
+    const userId = req.user!.id;
+    const result = await PaymentService.getPaymentHistory(userId);
 
     res.status(httpStatus.OK).json({
       success: true,
